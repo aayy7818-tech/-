@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>اختبار علم الأنسجة - الأنسجة الظهارية والضامة</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --surface: #111827;
+    --card: #1a2235;
+    --border: #2a3650;
+    --accent: #3b82f6;
+    --accent2: #06b6d4;
+    --green: #10b981;
+    --red: #ef4444;
+    --yellow: #f59e0b;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --glow: rgba(59,130,246,0.15);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Cairo', sans-serif;
+    min-height: 100vh;
+    background-image:
+      radial-gradient(ellipse at 20% 0%, rgba(59,130,246,0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 100%, rgba(6,182,212,0.06) 0%, transparent 50%);
+  }
+
+  .container {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 2rem 1.2rem;
+  }
+
+  /* HEADER */
+  .header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+    animation: fadeDown 0.7s ease;
+  }
+
+  .header-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, rgba(59,130,246,0.2), rgba(6,182,212,0.2));
+    border: 1px solid rgba(59,130,246,0.4);
+    color: var(--accent2);
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    padding: 0.35rem 1rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+    font-weight: 700;
+  }
+
+  .header h1 {
+    font-size: clamp(1.6rem, 4vw, 2.4rem);
+    font-weight: 900;
+    background: linear-gradient(135deg, #e2e8f0 30%, var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.3;
+    margin-bottom: 0.5rem;
+  }
+
+  .header p {
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+
+  /* PROGRESS */
+  .progress-bar-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    height: 8px;
+    margin-bottom: 0.6rem;
+    overflow: hidden;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 999px;
+    transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  .progress-label {
+    text-align: center;
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin-bottom: 2rem;
+    font-weight: 600;
+  }
+
+  /* QUESTION CARD */
+  .question-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.8rem;
+    margin-bottom: 1.5rem;
+    animation: slideUp 0.4s ease;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .question-card::before {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 100px; height: 100px;
+    background: radial-gradient(circle, rgba(59,130,246,0.1), transparent 70%);
+    pointer-events: none;
+  }
+
+  .q-number {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .q-number::before {
+    content: '';
+    display: inline-block;
+    width: 20px; height: 2px;
+    background: var(--accent);
+    border-radius: 2px;
+  }
+
+  .q-text {
+    font-size: 1.1rem;
+    font-weight: 700;
+    line-height: 1.7;
+    margin-bottom: 1.4rem;
+    color: #f1f5f9;
+  }
+
+  /* OPTIONS */
+  .options {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .option-btn {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 0.85rem 1.1rem;
+    text-align: right;
+    cursor: pointer;
+    font-family: 'Cairo', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text);
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .option-btn:hover:not(:disabled) {
+    border-color: var(--accent);
+    background: rgba(59,130,246,0.08);
+    transform: translateX(3px);
+  }
+
+  .option-btn:disabled { cursor: default; }
+
+  .option-letter {
+    min-width: 28px; height: 28px;
+    background: var(--border);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 900;
+    color: var(--muted);
+    transition: all 0.2s;
+    font-family: 'IBM Plex Mono', monospace;
+    flex-shrink: 0;
+  }
+
+  .option-text { flex: 1; }
+
+  .option-btn.correct {
+    border-color: var(--green);
+    background: rgba(16,185,129,0.12);
+    color: #a7f3d0;
+  }
+  .option-btn.correct .option-letter { background: var(--green); color: #fff; }
+
+  .option-btn.wrong {
+    border-color: var(--red);
+    background: rgba(239,68,68,0.1);
+    color: #fca5a5;
+  }
+  .option-btn.wrong .option-letter { background: var(--red); color: #fff; }
+
+  .option-btn.missed {
+    border-color: var(--green);
+    background: rgba(16,185,129,0.06);
+    color: #a7f3d0;
+    opacity: 0.7;
+  }
+
+  /* FEEDBACK */
+  .feedback {
+    margin-top: 1rem;
+    padding: 0.9rem 1.1rem;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    display: none;
+    animation: fadeIn 0.3s ease;
+  }
+
+  .feedback.correct-fb {
+    background: rgba(16,185,129,0.1);
+    border: 1px solid rgba(16,185,129,0.3);
+    color: #6ee7b7;
+    display: block;
+  }
+
+  .feedback.wrong-fb {
+    background: rgba(239,68,68,0.08);
+    border: 1px solid rgba(239,68,68,0.25);
+    color: #fca5a5;
+    display: block;
+  }
+
+  .feedback-translation {
+    margin-top: 0.5rem;
+    color: var(--muted);
+    font-size: 0.82rem;
+    font-weight: 400;
+    line-height: 1.6;
+  }
+
+  /* NAV */
+  .nav-btn {
+    display: block;
+    width: 100%;
+    padding: 1rem;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-family: 'Cairo', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.03em;
+    box-shadow: 0 4px 20px rgba(59,130,246,0.3);
+  }
+
+  .nav-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 28px rgba(59,130,246,0.4); }
+  .nav-btn:active { transform: translateY(0); }
+  .nav-btn:disabled { opacity: 0.4; cursor: default; transform: none; }
+
+  /* RESULTS */
+  #results-screen { display: none; animation: fadeIn 0.6s ease; }
+
+  .score-circle {
+    width: 160px; height: 160px;
+    border-radius: 50%;
+    margin: 0 auto 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    position: relative;
+  }
+
+  .score-circle svg {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    transform: rotate(-90deg);
+  }
+
+  .score-circle svg circle {
+    fill: none;
+    stroke-width: 8;
+    stroke-linecap: round;
+  }
+
+  .score-circle .track { stroke: var(--border); }
+  .score-circle .fill { transition: stroke-dashoffset 1.2s cubic-bezier(0.4,0,0.2,1); }
+
+  .score-number {
+    font-size: 2.4rem;
+    font-weight: 900;
+    z-index: 1;
+    line-height: 1;
+  }
+
+  .score-label {
+    font-size: 0.75rem;
+    color: var(--muted);
+    z-index: 1;
+    font-weight: 600;
+  }
+
+  .result-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem;
+    text-align: center;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+  }
+
+  .result-msg {
+    font-size: 1.4rem;
+    font-weight: 900;
+    margin-bottom: 0.5rem;
+  }
+
+  .result-sub {
+    color: var(--muted);
+    font-size: 0.9rem;
+    line-height: 1.7;
+  }
+
+  .shame-msg {
+    background: rgba(239,68,68,0.08);
+    border: 1px solid rgba(239,68,68,0.2);
+    border-radius: 12px;
+    padding: 1rem 1.4rem;
+    color: #fca5a5;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-top: 1rem;
+    animation: shake 0.5s ease 0.8s both;
+  }
+
+  /* ANSWERS REVIEW */
+  .answers-review { margin-top: 2rem; }
+  .answers-review h2 {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--accent2);
+    margin-bottom: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .review-item {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.2rem;
+    margin-bottom: 1rem;
+  }
+
+  .review-item.r-correct { border-color: rgba(16,185,129,0.3); }
+  .review-item.r-wrong { border-color: rgba(239,68,68,0.25); }
+
+  .review-q {
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+    color: #f1f5f9;
+  }
+
+  .review-q-tr {
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-bottom: 0.7rem;
+    font-style: italic;
+  }
+
+  .review-answers {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    font-size: 0.85rem;
+  }
+
+  .r-your-answer {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.4rem;
+  }
+
+  .tag {
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .tag-correct { background: rgba(16,185,129,0.2); color: #6ee7b7; }
+  .tag-wrong { background: rgba(239,68,68,0.15); color: #fca5a5; }
+  .tag-right-answer { background: rgba(59,130,246,0.15); color: #93c5fd; }
+
+  .answer-text { color: var(--text); }
+  .answer-text-tr { color: var(--muted); font-size: 0.78rem; margin-top: 0.15rem; }
+
+  .retry-btn {
+    display: block;
+    width: 100%;
+    padding: 1rem;
+    background: var(--surface);
+    color: var(--text);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    font-family: 'Cairo', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 1rem;
+  }
+  .retry-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ANIMATIONS */
+  @keyframes fadeDown { from { opacity:0; transform:translateY(-20px); } to { opacity:1; transform:none; } }
+  @keyframes slideUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:none; } }
+  @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+  @keyframes shake {
+    0%,100%{transform:translateX(0)} 20%{transform:translateX(-8px)} 40%{transform:translateX(8px)} 60%{transform:translateX(-5px)} 80%{transform:translateX(5px)}
+  }
+
+  .hidden { display: none !important; }
+
+  /* STAT PILLS */
+  .stats-row {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .stat-pill {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 0.4rem 1rem;
+    font-size: 0.82rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .dot { width: 8px; height: 8px; border-radius: 50%; }
+  .dot-green { background: var(--green); }
+  .dot-red { background: var(--red); }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-badge">⚗️ HISTOLOGY QUIZ · علم الأنسجة</div>
+    <h1>Epithelial &amp; Connective Tissues</h1>
+    <p style="color:var(--muted);font-size:0.88rem;">اختبار الأنسجة الظهارية والضامة</p>
+  </div>
+
+  <!-- QUIZ SCREEN -->
+  <div id="quiz-screen">
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
+    </div>
+    <div class="progress-label" id="progress-label">Question 1 of 15</div>
+
+    <div id="question-area"></div>
+
+    <button class="nav-btn" id="next-btn" onclick="nextQuestion()" disabled>
+      Next Question →
+    </button>
+  </div>
+
+  <!-- RESULTS SCREEN -->
+  <div id="results-screen">
+    <div class="result-card">
+      <div class="score-circle" id="score-circle">
+        <svg viewBox="0 0 160 160">
+          <circle class="track" cx="80" cy="80" r="70"/>
+          <circle class="fill" id="score-arc" cx="80" cy="80" r="70" stroke-dasharray="439.82" stroke-dashoffset="439.82"/>
+        </svg>
+        <span class="score-number" id="score-num">0%</span>
+        <span class="score-label">Your Score</span>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-pill"><span class="dot dot-green"></span><span id="correct-count">0</span> Correct</div>
+        <div class="stat-pill"><span class="dot dot-red"></span><span id="wrong-count">0</span> Wrong</div>
+      </div>
+
+      <div id="result-msg" class="result-msg"></div>
+      <div id="result-sub" class="result-sub"></div>
+      <div id="shame-msg" class="shame-msg hidden"></div>
+    </div>
+
+    <div class="answers-review">
+      <h2>📋 Answer Review · مراجعة الإجابات</h2>
+      <div id="review-list"></div>
+    </div>
+
+    <button class="retry-btn" onclick="restartQuiz()">🔄 Retry Quiz · إعادة الاختبار</button>
+  </div>
+</div>
+
+<script>
+const questions = [
+  {
+    en: "What are the 4 primary tissue types in the human body?",
+    ar: "ما هي الأنواع الأربعة الأساسية للأنسجة في جسم الإنسان؟",
+    options: [
+      { en: "Epithelial, Connective, Muscle, Nervous", ar: "ظهارية، ضامة، عضلية، عصبية" },
+      { en: "Epithelial, Vascular, Bone, Nervous", ar: "ظهارية، وعائية، عظمية، عصبية" },
+      { en: "Glandular, Connective, Muscle, Bone", ar: "غدية، ضامة، عضلية، عظمية" },
+      { en: "Epithelial, Adipose, Muscle, Nervous", ar: "ظهارية، دهنية، عضلية، عصبية" }
+    ],
+    correct: 0,
+    explanation: {
+      en: "The 4 primary tissue types are: Epithelial (covering/lining), Connective (support), Muscle (movement), Nervous (control).",
+      ar: "الأنواع الأربعة الأساسية هي: الظهارية (تغطية/بطانة)، الضامة (دعم)، العضلية (حركة)، العصبية (تحكم)."
+    }
+  },
+  {
+    en: "Simple squamous epithelium is found in which location?",
+    ar: "أين توجد الظهارة الحرشفية البسيطة؟",
+    options: [
+      { en: "Stomach lining", ar: "بطانة المعدة" },
+      { en: "Alveoli of lungs and lining of blood vessels", ar: "الحويصلات الهوائية للرئتين وبطانة الأوعية الدموية" },
+      { en: "Urinary bladder", ar: "المثانة البولية" },
+      { en: "Kidney tubules", ar: "الأنابيب الكلوية" }
+    ],
+    correct: 1,
+    explanation: {
+      en: "Simple squamous epithelium is found in alveoli of lungs, kidneys, and lining of visceral organs and all blood vessels.",
+      ar: "توجد الظهارة الحرشفية البسيطة في الحويصلات الهوائية، الكلى، وبطانة الأعضاء الحشوية وجميع الأوعية الدموية."
+    }
+  },
+  {
+    en: "Pseudo-stratified columnar epithelium is mainly found in:",
+    ar: "أين توجد الظهارة العمودية شبه الطبقية بشكل رئيسي؟",
+    options: [
+      { en: "Esophagus", ar: "المريء" },
+      { en: "Urinary bladder", ar: "المثانة البولية" },
+      { en: "Respiratory tract", ar: "الجهاز التنفسي" },
+      { en: "Skin epidermis", ar: "بشرة الجلد" }
+    ],
+    correct: 2,
+    explanation: {
+      en: "Pseudo-stratified columnar epithelium is found in the respiratory tract where ciliated cells clean inspired air.",
+      ar: "توجد الظهارة العمودية شبه الطبقية في الجهاز التنفسي حيث تنظف الخلايا الهدبية الهواء المستنشق."
+    }
+  },
+  {
+    en: "Transitional epithelium is found exclusively in:",
+    ar: "أين توجد الظهارة الانتقالية حصرياً؟",
+    options: [
+      { en: "Digestive organs", ar: "الأعضاء الهضمية" },
+      { en: "Renal calyces, ureters, and urinary bladder", ar: "الكؤوس الكلوية والحالب والمثانة" },
+      { en: "Skin and oral cavity", ar: "الجلد وتجويف الفم" },
+      { en: "Liver and pancreas", ar: "الكبد والبنكرياس" }
+    ],
+    correct: 1,
+    explanation: {
+      en: "Transitional epithelium is found exclusively in renal calyces, renal pelvis, ureters, and bladder. It changes shape to accommodate stretching.",
+      ar: "توجد الظهارة الانتقالية حصرياً في الكؤوس الكلوية والحوض الكلوي والحالب والمثانة. تتغير شكلها لاستيعاب التمدد."
+    }
+  },
+  {
+    en: "Which connective tissue fiber provides the main tensile strength and makes up 95% of tendons?",
+    ar: "أي ألياف النسيج الضام توفر مقاومة الشد الرئيسية وتشكّل 95% من الأوتار؟",
+    options: [
+      { en: "Elastic fibers", ar: "الألياف المرنة" },
+      { en: "Reticular fibers", ar: "الألياف الشبكية" },
+      { en: "Collagen fibers", ar: "ألياف الكولاجين" },
+      { en: "Muscle fibers", ar: "الألياف العضلية" }
+    ],
+    correct: 2,
+    explanation: {
+      en: "Collagen is a very strong molecule with high tensile strength. Tendons are made up of almost 95% collagen.",
+      ar: "الكولاجين جزيء قوي جداً بمقاومة شد عالية. تتكون الأوتار بنسبة تقارب 95% من الكولاجين."
+    }
+  },
+  {
+    en: "Reticular fibers provide a supporting framework for which organs?",
+    ar: "الألياف الشبكية توفر إطاراً داعماً لأي أعضاء؟",
+    options: [
+      { en: "Heart and lungs", ar: "القلب والرئتين" },
+      { en: "Spleen, lymph nodes, red bone marrow, liver, endocrine glands", ar: "الطحال والعقد الليمفاوية ونخاع العظم الأحمر والكبد والغدد الصماء" },
+      { en: "Kidneys and stomach", ar: "الكلى والمعدة" },
+      { en: "Brain and spinal cord", ar: "الدماغ والحبل الشوكي" }
+    ],
+    correct: 1,
+    explanation: {
+      en: "Reticular fibers provide framework for: Spleen, Lymph nodes, Red bone marrow, Liver, and Endocrine glands.",
+      ar: "توفر الألياف الشبكية إطاراً للطحال، العقد الليمفاوية، نخاع العظم الأحمر، الكبد، والغدد الصماء."
+    }
+  },
+  {
+    en: "Which connective tissue cell synthesizes fibers and maintains the structural framework of organs?",
+    ar: "أي خلايا النسيج الضام تصنع الألياف وتحافظ على الإطار الهيكلي للأعضاء؟",
+    options: [
+      { en: "Mast cells", ar: "الخلايا البدينة" },
+      { en: "Fibroblasts", ar: "الخلايا الليفية" },
+      { en: "Macrophages", ar: "البلاعم" },
+      { en: "Adipocytes", ar: "الخلايا الدهنية" }
+    ],
+    correct: 1,
+    explanation: {
+      en: "Fibroblasts are active cells that synthesize fibers. They have an irregular shape with a light oval nucleus rich in euchromatin.",
+      ar: "الخلايا الليفية خلايا نشطة تصنع الألياف. لها شكل غير منتظم مع نواة خفيفة بيضاوية غنية باليوكروماتين."
+    }
+  },
+  {
+    en: "Macrophages are derived from which blood cell?",
+    ar: "تنشأ البلاعم (Macrophages) من أي خلية دموية؟",
+    options: [
+      { en: "Lymphocytes", ar: "الخلايا الليمفاوية" },
+      { en: "Neutrophils", ar: "العدلات" },
+      { en: "Monocytes", ar: "الخلايا الأحادية (مونوسايت)" },
+      { en: "Eosinophils", ar: "الحمضات" }
+    ],
+    correct: 2,
+    explanation: {
+      en: "Macrophages are phagocytic cells derived from monocytes. Monocytes from blood vessels take residence and transform into macrophages.",
+      ar: "البلاعم خلايا بلعمية تنشأ من الخلايا الأحادية. تأخذ الخلايا الأحادية من الأوعية الدموية مكان الإقامة وتتحول إلى بلاعم."
+    }
+  },
+  {
+    en: "Which name is given to macrophages found in the liver?",
+    ar: "ما الاسم المُعطى للبلاعم الموجودة في الكبد؟",
+    options: [
+      { en: "Dust cells", ar: "خلايا الغبار" },
+      { en: "Kupffer cells", ar: "خلايا كوبفر" },
+      { en: "Langerhans cells", ar: "خلايا لانغرهانز" },
+      { en: "Microglia", ar: "الخلايا الدبقية الصغيرة" }
+    ],
+    correct: 1,
+    explanation: {
+      en: "Macrophages in the liver are called Kupffer cells. In lung = Dust cells, Skin = Langerhans cells, Bone = Osteoclasts, Brain = Microglia.",
+      ar: "البلاعم في الكبد تسمى خلايا كوبفر. في الرئة = خلايا الغبار، الجلد = خلايا لانغرهانز، العظم = الخلايا الآكلة للعظم، الدماغ = الخلايا الدبقية الصغيرة."
+    }
+  },
+  {
+    en: "Mast cells contain granules with which substances?",
+    ar: "تحتوي الخلايا البدينة على حبيبات بها أي مواد؟",
+    options: [
+      { en: "Collagen and elastin", ar: "كولاجين وإيلاستين" },
+      { en: "Heparin and histamine", ar: "الهيبارين والهيستامين" },
+      { en: "Melanin and keratin", ar: "ميلانين وكيراتين" },
+      { en: "Immunoglobulins and antibodies", ar: "الغلوبولينات المناعية والأجسام المضادة" }
+    ],
+    correct: 1,
+    explanation: {
+      en: "Mast cells have a large spherical nucleus with cytoplasm filled with large granules containing heparin and histamine.",
+      ar: "الخلايا البدينة لها نواة كروية كبيرة وسيتوبلازم مليء بحبيبات كبيرة تحتوي على الهيبارين والهيستامين."
+    }
+  },
+  {
+    en: "Plasma cells are characterized by which unique nuclear appearance?",
+    ar: "تتميز الخلايا البلازمية بأي مظهر نووي مميز؟",
+    options: [
+      { en: "Multilobed nucleus (horseshoe shape)", ar: "نواة متعددة الفصوص (شكل حدوة الحصان)" },
+      { en: "Cartwheel / clock-face nuclei", ar: "نواة على شكل عجلة العربة / وجه الساعة" },
+      { en: "Single round nucleus pushed to periphery", ar: "نواة مفردة كروية مدفوعة نحو المحيط" },
+      { en: "Elongated basophilic nucleus", ar: "نواة ممدودة قاعدية" }
+    ],
+    correct: 1,
+    explanation: {
+      en: "Plasma cells are characterized by cartwheel (clock face) nuclei. Their function is synthesis of immunoglobulins (antibodies).",
+      ar: "تتميز الخلايا البلازمية بنواة على شكل عجلة العربة (وجه الساعة). وظيفتها تخليق الغلوبولينات المناعية (الأجسام المضادة)."
+    }
+  },
+  {
+    en: "Keratinized stratified squamous epithelium is found in:",
+    ar: "أين توجد الظهارة الحرشفية الطبقية المتقرنة؟",
+    options: [
+      { en: "Esophagus and vagina", ar: "المريء والمهبل" },
+      { en: "Skin epidermis", ar: "بشرة الجلد" },
+      { en: "Kidney tubules", ar: "الأنابيب الكلوية" },
+      { en: "Respiratory tract", ar: "الجهاز التنفسي" }
+    ],
+    correct: 1,
+    explanation: {
+      en: "Keratinized stratified squamous epithelium is found in skin epidermis. It provides protection against abrasion, bacterial invasion, and desiccation.",
+      ar: "توجد الظهارة الحرشفية الطبقية المتقرنة في بشرة الجلد. توفر الحماية من التآكل والغزو البكتيري والجفاف."
+    }
+  },
+  {
+    en: "Which exocrine gland secretes by releasing its entire cell as the secretory product?",
+    ar: "أي غدة إفرازية تُفرز عن طريق تحرير الخلية بأكملها كمنتج إفرازي؟",
+    options: [
+      { en: "Merocrine gland (e.g., pancreas)", ar: "الغدة الميروكرينية (مثل البنكرياس)" },
+      { en: "Apocrine gland (e.g., mammary glands)", ar: "الغدة الأبوكرينية (مثل الغدد الثديية)" },
+      { en: "Holocrine gland (e.g., sebaceous glands)", ar: "الغدة الهولوكرينية (مثل الغدد الدهنية)" },
+      { en: "Endocrine gland", ar: "الغدة الصماء" }
+    ],
+    correct: 2,
+    explanation: {
+      en: "Holocrine glands (e.g., sebaceous glands of skin): the cells themselves become the secretory product.",
+      ar: "الغدد الهولوكرينية (مثل الغدد الدهنية في الجلد): تصبح الخلايا نفسها المنتج الإفرازي."
+    }
+  },
+  {
+    en: "Simple cuboidal epithelium is found in:",
+    ar: "أين توجد الظهارة المكعبة البسيطة؟",
+    options: [
+      { en: "Alveoli and heart chambers", ar: "الحويصلات الهوائية وحجرات القلب" },
+      { en: "Kidney tubules and thyroid gland follicles", ar: "الأنابيب الكلوية وجريبات الغدة الدرقية" },
+      { en: "Esophagus and anal canal", ar: "المريء والقناة الشرجية" },
+      { en: "Skin surface", ar: "سطح الجلد" }
+    ],
+    correct: 1,
+    explanation: {
+      en: "Simple cuboidal epithelium is located in tubules and ducts in the kidney, and in follicles of the thyroid gland. It has centrally-placed spherical nuclei.",
+      ar: "توجد الظهارة المكعبة البسيطة في الأنابيب والقنوات الكلوية والجريبات في الغدة الدرقية. لها نوى كروية موضوعة في الوسط."
+    }
+  },
+  {
+    en: "Dense irregular connective tissue is found in:",
+    ar: "أين يوجد النسيج الضام الكثيف غير المنتظم؟",
+    options: [
+      { en: "Tendons", ar: "الأوتار" },
+      { en: "Dermis, prostate, mammary glands, outer capsule of organs", ar: "الأدمة والبروستاتا والغدة الثديية والقشرة الخارجية للأعضاء" },
+      { en: "Arteries and uterus", ar: "الشرايين والرحم" },
+      { en: "Umbilical cord", ar: "الحبل السري" }
+    ],
+    correct: 1,
+    explanation: {
+      en: "Dense irregular connective tissue has bundles of collagen without definite orientation. Found in dermis, prostate, mammary glands, outer capsule of many organs.",
+      ar: "النسيج الضام الكثيف غير المنتظم يحتوي على حزم من الكولاجين بدون اتجاه محدد. يوجد في الأدمة والبروستاتا والغدة الثديية والقشرة الخارجية للعديد من الأعضاء."
+    }
+  }
+];
+
+let current = 0;
+let selected = null;
+let answers = [];
+let answered = false;
+
+function shuffle(arr) {
+  return [...arr].sort(() => Math.random() - 0.5);
+}
+
+function renderQuestion() {
+  const q = questions[current];
+  answered = false;
+  selected = null;
+
+  const pct = ((current) / questions.length) * 100;
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-label').textContent = `Question ${current + 1} of ${questions.length}`;
+
+  const nextBtn = document.getElementById('next-btn');
+  nextBtn.disabled = true;
+  nextBtn.textContent = current < questions.length - 1 ? 'Next Question →' : 'Show Results 🎯';
+
+  const area = document.getElementById('question-area');
+  area.innerHTML = `
+    <div class="question-card">
+      <div class="q-number">Question ${current + 1}</div>
+      <div class="q-text">${q.en}</div>
+      <div class="q-text" style="font-size:0.82rem;color:var(--muted);font-weight:400;margin-top:-0.8rem;margin-bottom:1.2rem;font-style:italic;direction:rtl;">${q.ar}</div>
+      <div class="options" id="options"></div>
+      <div class="feedback" id="feedback"></div>
+    </div>
+  `;
+
+  const letters = ['A','B','C','D'];
+  const optContainer = document.getElementById('options');
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = `
+      <span class="option-letter">${letters[i]}</span>
+      <span class="option-text">${opt.en}<br><span style="font-size:0.78rem;color:var(--muted);font-weight:400;direction:rtl;display:block;">${opt.ar}</span></span>
+    `;
+    btn.onclick = () => selectOption(i);
+    optContainer.appendChild(btn);
+  });
+}
+
+function selectOption(idx) {
+  if (answered) return;
+  answered = true;
+  selected = idx;
+  const q = questions[current];
+  const btns = document.querySelectorAll('.option-btn');
+  const fb = document.getElementById('feedback');
+
+  btns.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.correct) btn.classList.add('correct');
+    else if (i === idx && idx !== q.correct) btn.classList.add('wrong');
+    else if (i !== idx && i !== q.correct) btn.classList.add('missed');
+  });
+
+  const isCorrect = idx === q.correct;
+  answers.push({ q: current, chosen: idx, correct: isCorrect });
+
+  fb.className = `feedback ${isCorrect ? 'correct-fb' : 'wrong-fb'}`;
+  fb.innerHTML = isCorrect
+    ? `✅ Correct!<div class="feedback-translation">${q.explanation.en}<br><span style="color:#475569;direction:rtl;display:block;">${q.explanation.ar}</span></div>`
+    : `❌ Wrong — Correct answer: <strong>${q.options[q.correct].en}</strong><div class="feedback-translation">${q.explanation.en}<br><span style="color:#475569;direction:rtl;display:block;">${q.explanation.ar}</span></div>`;
+
+  document.getElementById('next-btn').disabled = false;
+}
+
+function nextQuestion() {
+  if (!answered) return;
+  current++;
+  if (current >= questions.length) {
+    showResults();
+  } else {
+    renderQuestion();
+  }
+}
+
+function showResults() {
+  document.getElementById('quiz-screen').style.display = 'none';
+  const rs = document.getElementById('results-screen');
+  rs.style.display = 'block';
+
+  const correct = answers.filter(a => a.correct).length;
+  const total = questions.length;
+  const pct = Math.round((correct / total) * 100);
+
+  // Update counter
+  document.getElementById('score-num').textContent = pct + '%';
+  document.getElementById('correct-count').textContent = correct;
+  document.getElementById('wrong-count').textContent = total - correct;
+
+  // Arc
+  const circumference = 439.82;
+  const offset = circumference - (pct / 100) * circumference;
+  const arc = document.getElementById('score-arc');
+  const color = pct >= 70 ? '#10b981' : pct >= 50 ? '#f59e0b' : '#ef4444';
+  arc.style.stroke = color;
+  setTimeout(() => { arc.style.strokeDashoffset = offset; }, 100);
+
+  // Message
+  let msg, sub;
+  if (pct >= 90) { msg = '🏆 Excellent! Histology genius!'; sub = 'Outstanding performance — you\'re exam-ready. · أداء رائع، أنت جاهز للامتحان!'; }
+  else if (pct >= 70) { msg = '👍 Very Good!'; sub = 'Strong result. Review the wrong answers and you\'ll ace it. · راجع الأسئلة الخاطئة وستكون في القمة.'; }
+  else if (pct >= 50) { msg = '⚠️ Pass — but needs revision'; sub = 'Go through the material again and retake. · راجع المادة مرة أخرى وأعد الاختبار.'; }
+  else { msg = ''; sub = ''; }
+
+  document.getElementById('result-msg').textContent = msg;
+  document.getElementById('result-sub').textContent = sub;
+
+  const shame = document.getElementById('shame-msg');
+  if (pct <= 49) {
+    shame.classList.remove('hidden');
+    shame.textContent = '🛍️ اشتري قميص صيفي للدور الثاني من هسه 🙏🏻';
+  }
+
+  // Review
+  const reviewList = document.getElementById('review-list');
+  reviewList.innerHTML = '';
+  answers.forEach(a => {
+    const q = questions[a.q];
+    const div = document.createElement('div');
+    div.className = `review-item ${a.correct ? 'r-correct' : 'r-wrong'}`;
+    div.innerHTML = `
+      <div class="review-q">${a.q + 1}. ${q.en}</div>
+      <div class="review-q-tr" style="direction:rtl;">${q.ar}</div>
+      <div class="review-answers">
+        <div class="r-your-answer">
+          <span class="tag ${a.correct ? 'tag-correct' : 'tag-wrong'}">${a.correct ? '✓ Correct' : '✗ Wrong'}</span>
+          <div>
+            <div class="answer-text">Your answer: ${q.options[a.chosen].en}</div>
+            <div class="answer-text-tr" style="direction:rtl;">${q.options[a.chosen].ar}</div>
+          </div>
+        </div>
+        ${!a.correct ? `
+        <div class="r-your-answer">
+          <span class="tag tag-right-answer">✓ Answer</span>
+          <div>
+            <div class="answer-text">${q.options[q.correct].en}</div>
+            <div class="answer-text-tr" style="direction:rtl;">${q.options[q.correct].ar}</div>
+          </div>
+        </div>` : ''}
+      </div>
+    `;
+    reviewList.appendChild(div);
+  });
+}
+
+function restartQuiz() {
+  current = 0;
+  answers = [];
+  answered = false;
+  selected = null;
+  document.getElementById('results-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  renderQuestion();
+}
+
+// Init
+renderQuestion();
+</script>
+</body>
+</html>
